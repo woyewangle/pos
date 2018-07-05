@@ -1,5 +1,6 @@
 'use strict';
 
+
 describe('pos', () => {
 
   it('should print text', () => {
@@ -29,5 +30,32 @@ describe('pos', () => {
 **********************`;
 
     expect(console.log).toHaveBeenCalledWith(expectText);
+  });
+});
+
+
+describe('pos', () => {
+
+  it('Function calculateTypeAndNum test', () => {
+
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ];
+
+    let shoppingList=calculateTypeAndNum(tags);
+    const result=[
+            {"barcode":"ITEM000001","count":5},
+            {"barcode":"ITEM000003","count":2.5},
+            {"barcode":"ITEM000005","count":3}
+     ];
+    expect(shoppingList).toEqual(result);
+
   });
 });

@@ -2,7 +2,7 @@
 
 function printReceipt(inputs){
   //统计每个种类和数量
-  let shoppingList =countItem(inputs);
+  let shoppingList =calculateTypeAndNum(inputs);
   //从全部商品中找到对应商品的信息并且小计
   let detailItems=fIndItemDetail(shoppingList);
   //处理促销情况
@@ -11,7 +11,7 @@ function printReceipt(inputs){
   console.log(print(finaldetailItems));
 };
 
-function countItem(collection) {
+function calculateTypeAndNum(collection) {
   let map = new Map();
   for(let i=0;i<collection.length;i++){
     // 处理正常字符
@@ -41,6 +41,7 @@ function countItem(collection) {
       count:value
     });
   })
+  console.info(JSON.stringify(shoppingList));
   return shoppingList;
 }
 
