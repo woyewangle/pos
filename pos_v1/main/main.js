@@ -17,6 +17,7 @@ function countItem(collection) {
     // 处理正常字符
     // 
     // 
+    // 
     if(collection[i].length == 10) {
       let item = collection[i];
       // 判重并且计数
