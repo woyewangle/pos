@@ -6,9 +6,9 @@ function printReceipt(inputs){
   //从全部商品中找到对应商品的信息并且小计
   let detailItems=fIndItemDetail(shoppingList);
   //处理促销情况
-  let finaldetailItems= countDiscount(detailItems);
+  let detailItemsForDiscount= countItemsForDiscount(detailItems);
   //打印
-  console.log(print(finaldetailItems));
+  console.log(print(detailItemsForDiscount));
 };
 
 function calculateTypeAndNum(collection) {
@@ -41,7 +41,6 @@ function calculateTypeAndNum(collection) {
       count:value
     });
   })
-  console.info(JSON.stringify(shoppingList));
   return shoppingList;
 }
 
@@ -64,7 +63,7 @@ function fIndItemDetail(shoppingList){
   return detailItems;
 }
 
-function countDiscount(detailItems){
+function countItemsForDiscount(detailItems){
   let countDiscountItem=loadPromotions();
   let countDiscount=0;
   for(let i=0;i< countDiscountItem[0].barcodes.length;i++){
@@ -79,6 +78,7 @@ function countDiscount(detailItems){
 
   }
   detailItems.push({discou:countDiscount});
+  console.info(JSON.stringify(detailItems));
   return detailItems;
 }
 

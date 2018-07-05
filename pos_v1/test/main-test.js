@@ -59,3 +59,49 @@ describe('pos', () => {
 
   });
 });
+
+
+
+describe('pos', () => {
+
+  it('Function fIndItemDetail test', () => {
+
+    const tags = [
+      {"barcode":"ITEM000001","count":5},
+      {"barcode":"ITEM000003","count":2.5},
+      {"barcode":"ITEM000005","count":3}
+    ];
+
+    let detailItems=fIndItemDetail(tags);
+    const result=[
+            {"barcode":"ITEM000001","name":"雪碧","unit":"瓶","price":3,"num":5,"subtotal":15},
+            {"barcode":"ITEM000003","name":"荔枝","unit":"斤","price":15,"num":2.5,"subtotal":37.5},
+            {"barcode":"ITEM000005","name":"方便面","unit":"袋","price":4.5,"num":3,"subtotal":13.5}
+     ];
+    expect(detailItems).toEqual(result);
+
+  });
+});
+
+
+describe('pos', () => {
+
+  it('Function countItemsForDiscount test', () => {
+
+    const tags = [
+            {"barcode":"ITEM000001","name":"雪碧","unit":"瓶","price":3,"num":5,"subtotal":15},
+            {"barcode":"ITEM000003","name":"荔枝","unit":"斤","price":15,"num":2.5,"subtotal":37.5},
+            {"barcode":"ITEM000005","name":"方便面","unit":"袋","price":4.5,"num":3,"subtotal":13.5}
+     ];
+
+    let detailItemsForDiscount=countItemsForDiscount(tags);
+    const result=[
+             {"barcode":"ITEM000001","name":"雪碧","unit":"瓶","price":3,"num":5,"subtotal":12},
+             {"barcode":"ITEM000003","name":"荔枝","unit":"斤","price":15,"num":2.5,"subtotal":37.5},
+             {"barcode":"ITEM000005","name":"方便面","unit":"袋","price":4.5,"num":3,"subtotal":9},
+             {"discou":7.5}
+     ];
+    expect(detailItemsForDiscount).toEqual(result);
+
+  });
+});
