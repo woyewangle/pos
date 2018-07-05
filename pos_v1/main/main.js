@@ -7,8 +7,10 @@ function printReceipt(inputs){
   let detailItems=fIndItemDetail(shoppingList);
   //处理促销情况
   let detailItemsForDiscount= countItemsForDiscount(detailItems);
+  //生成账单
+  let bill=builderBill(detailItemsForDiscount);
   //打印
-  console.log(print(detailItemsForDiscount));
+  console.log(bill);
 };
 
 function calculateTypeAndNum(collection) {
@@ -82,7 +84,7 @@ function countItemsForDiscount(detailItems){
   return detailItems;
 }
 
-function print(finaldetailItems){
+function builderBill(finaldetailItems){
   let sum=0;          //数字要记得初始化
   let title="***<没钱赚商店>收据***\n";
   let content="";
@@ -95,5 +97,6 @@ function print(finaldetailItems){
   }
   let total='----------------------\n总计：'+sum.toFixed(2)+'(元)'+'\n';
   let subtotal='节省：'+finaldetailItems[3].discou.toFixed(2)+'(元)'+'\n**********************';
+  console.info(JSON.stringify(title+content+total+subtotal));
   return title+content+total+subtotal;
 }
