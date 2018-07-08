@@ -2,40 +2,36 @@
 
 function printReceipt(inputs){
   //统计每个种类和数量
-  let shoppingList =calculateTypeAndNum(inputs);
-  //从全部商品中找到对应商品的信息并且小计
-  let detailItems=fIndItemDetail(shoppingList);
-  //处理促销情况
-  let detailItemsForDiscount= countItemsForDiscount(detailItems);
+  let typeAndNum =calculateTypeAndNum(inputs);
+  let ItemsList=pushTypeAndNum(typeAndNum);
+  //映射商品的信息并且小计
+  let detailItemsList=addDetailAndSubtotal(ItemsList);
+  //计算总优惠和总价
+  let ItemsListFordiscount=countSaveAndSum(detailItemsList);
   //生成账单
-  let bill=builderBill(detailItemsForDiscount);
+  let bill=builderBill(ItemsListFordiscount);
   //打印
   console.log(bill);
 };
 
-function calculateTypeAndNum(collection) {
-  let map = new Map();
-  for(let i=0;i<collection.length;i++){
-    // 处理正常字符
-    if(collection[i].length == 10) {
-      let item = collection[i];
-      // 判重并且计数
-      if(!map.has(item)) {
-        map.set(item, 0);
-      }
-      map.set(item,map.get(item) + 1);
-    } else {
-      //处理特殊字符
-      let item = collection[i].substring(0,10);
-      // 判重并且计数
-      if(!map.has(item)) {
-        map.set(item, 0);
-      }
-      //提取特殊字符后边的数字
-      let nums= Number(collection[i].substring(11));
-      map.set(item,map.get(item) + nums);
-    }
-  }
+function calculateTypeAndNum(collection){
+    let typeAndNumMap =new Map();
+      for(let i=0;i<collection.length;i++){
+         let item = collection[i].substring(0,10);
+         let nums=1;
+         if(!typeAndNumMap.has(item)) {
+            typeAndNumMap.set(item, 0);
+           }
+         if(collection[i].length > 10) {
+            nums= Number(collection[i].substring(11));
+          }
+          typeAndNumMap.set(item,typeAndNumMap.get(item) + nums);
+        }
+    return typeAndNumMap;
+}
+
+
+function pushTypeAndNum(map) {
   let shoppingList=[];
   map.forEach(function(value,key){
     shoppingList.push({
@@ -46,7 +42,8 @@ function calculateTypeAndNum(collection) {
   return shoppingList;
 }
 
-function fIndItemDetail(shoppingList){
+
+function addDetailAndSubtotal(shoppingList){
   let detailItems=[];
   let allItems=loadAllItems();
   for(let i=0;i<shoppingList.length;i++){
@@ -64,38 +61,36 @@ function fIndItemDetail(shoppingList){
   }
   return detailItems;
 }
+let sum=0;
+function countSaveAndSum(detailItems){
+  let discountItem=loadPromotions();
+  let discou=0;
 
-function countItemsForDiscount(detailItems){
-  let countDiscountItem=loadPromotions();
-  let countDiscount=0;
-  for(let i=0;i< countDiscountItem[0].barcodes.length;i++){
-    for(let j=0; j<detailItems.length;j++){
-      if(countDiscountItem[0].barcodes[i]===detailItems[j].barcode){
-        if(detailItems[j].num>=2){
-          detailItems[j].subtotal=detailItems[j].subtotal-detailItems[j].price;
-          countDiscount+=detailItems[j].price;
+  for(let i=0;i< detailItems.length;i++){
+    for(let j=0; j<discountItem[0].barcodes.length;j++){
+      if(discountItem[0].barcodes[j]===detailItems[i].barcode){
+        if(detailItems[i].num>=2){
+          detailItems[i].subtotal=detailItems[i].subtotal-detailItems[i].price;
+          discou+=detailItems[i].price;
         }
       }
     }
+    sum=sum+detailItems[i].subtotal;
 
   }
-  detailItems.push({discou:countDiscount});
-  console.info(JSON.stringify(detailItems));
+  detailItems.push({discou:discou});
+  detailItems.push({sum:sum});
   return detailItems;
 }
 
 function builderBill(finaldetailItems){
-  let sum=0;          //数字要记得初始化
   let title="***<没钱赚商店>收据***\n";
   let content="";
-  for(let i=0;i<finaldetailItems.length-1;i++){
-    sum=sum+finaldetailItems[i].subtotal;
-    let price=finaldetailItems[i].price.toFixed(2);
-
+  for(let i=0;i<finaldetailItems.length-2;i++){
     content+="名称："+finaldetailItems[i].name+'，'+'数量：'+finaldetailItems[i].num+finaldetailItems[i].unit+'，' +
-      '单价：'+price+'(元)，'+'小计：'+finaldetailItems[i].subtotal.toFixed(2)+'(元)\n';
+      '单价：'+finaldetailItems[i].price.toFixed(2)+'(元)，'+'小计：'+finaldetailItems[i].subtotal.toFixed(2)+'(元)\n';
   }
-  let total='----------------------\n总计：'+sum.toFixed(2)+'(元)'+'\n';
+  let total='----------------------\n总计：'+finaldetailItems[4].sum.toFixed(2)+'(元)'+'\n';
   let subtotal='节省：'+finaldetailItems[3].discou.toFixed(2)+'(元)'+'\n**********************';
   console.info(JSON.stringify(title+content+total+subtotal));
   return title+content+total+subtotal;
